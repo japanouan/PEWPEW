@@ -79,6 +79,6 @@
     max-height: 100%;
 }
 
-#layer1 ,#layer2 ,#layer3 ,#layer4, #player, #angler1, #lucky, #projectile {
+#layer1 ,#layer2 ,#layer3 ,#layer4, #player, #tiger, #lucky, #projectile, #fish {
     display: none;
 }

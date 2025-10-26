@@ -192,13 +192,20 @@ window.addEventListener('load', function() {
             this.frameX = 0;
             this.frameY = 0;
             this.maxFrame = 37;
+            this.animationTimer = 0;
+            this.animationInterval = 100;
         }
-        update(){
+        update(deltaTime){
             this.x += this.speedX;
             if ( this.x + this.width < 0 ) this.markForDeletion = true;
             //sprite animation
-            if ( this.frameX < this.maxFrame ) this.frameX++;
-            else this.frameX = 0;
+            if ( this.animationTimer > this.animationInterval ) {
+                this.animationTimer = 0;
+                if (this.frameX < this.maxFrame) this.frameX++;
+                else this.frameX = 0;
+            } else {
+                this.animationTimer += deltaTime;
+            }
         }
         draw(context){
             if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
@@ -208,29 +215,36 @@ window.addEventListener('load', function() {
         }
     }
 
-    class Anglerl extends Enemy {
+    class Tiger extends Enemy {
         constructor(game){
             super(game);
-            this.image = document.getElementById('angler1');
-            this.width = 228;
-            this.height = 169;
+            this.image = document.getElementById('tiger');
+            this.width = 290;
+            this.height = 196;
+            this.maxFrame = 3;
             this.lives = 14;
             this.score = this.lives;
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
-            this.frameY = Math.floor(Math.random() * 3);
         }
     }
 
     class Angler2 extends Enemy {
         constructor(game){
             super(game);
-            this.image = document.getElementById('angler1');
-            this.width = 228;
-            this.height = 169;
+            this.image = document.getElementById('fish');
+            this.width = 500 * 0.4;
+            this.height = 345 * 0.4;
+            this.maxFrame = 2;
             this.lives = 16;
             this.score = this.lives;
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
-            this.frameY = Math.floor(Math.random() * 2);
+            this.frameY = Math.floor(Math.random() * 3);
+        }
+        draw(context){
+            // super.draw(context);
+            context.drawImage(this.image, this.frameX * 500, this.frameY * 345, 500, 345, this.x, this.y, this.width, this.height);
+            context.font = '20px Helvetica'
+            context.fillText(this.lives, this.x, this.y);
         }
     }
 
@@ -356,7 +370,7 @@ window.addEventListener('load', function() {
             
             
             this.enemies.forEach((enemy)=>{
-                enemy.update();
+                enemy.update(deltaTime);
                 if (this.checkCollision(this.player, enemy)){
                     enemy.markForDeletion = true;
                 }
@@ -399,7 +413,7 @@ window.addEventListener('load', function() {
         }
         addEnemy(){
             const randomize = Math.random();
-            if (randomize < 0.3) this.enemies.push(new Anglerl(this));
+            if (randomize < 0.3) this.enemies.push(new Tiger(this));
             else if (randomize < 0.6) this.enemies.push(new Angler2(this));
             else this.enemies.push(new LuckyFish(this));
             // console.log(this.enemies);
