@@ -1,7 +1,7 @@
 window.addEventListener('load', function() {
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 500;
+    canvas.width = 1000;
     canvas.height = 500;
 
     class InputHandler{
@@ -12,6 +12,8 @@ window.addEventListener('load', function() {
                     this.game.keys.push(e.key);
                 }else if ( e.key === ' ' ) {
                     this.game.player.shootTop();
+                }else if ( e.key === 'd' ) {
+                    this.game.debug = !this.game.debug;
                 }
             })
             window.addEventListener('keyup', e => {
@@ -48,15 +50,20 @@ window.addEventListener('load', function() {
         constructor(game){
             this.game = game;
             this.width = 120;
-            this.height = 120;
+            this.height = 190;
             this.x = 20;
             this.y = 120;
+            this.frameX = 0;
+            this.frameY = 0;
+            this.maxFrame = 7;
             this.speedY = 0;
-            this.speedX = 0;
             this.maxSpeed = 4;
             this.projectiles = [];
+            this.image = document.getElementById('player');
+            this.frameTimer = 0;
+            this.frameInterval = 200;
         }
-        update(){
+        update(deltaTime){
             if ( this.game.keys.includes('ArrowUp') ) this.speedY = -this.maxSpeed;
             else if ( this.game.keys.includes('ArrowDown') ) this.speedY = this.maxSpeed;
             else this.speedY = 0;
@@ -66,10 +73,18 @@ window.addEventListener('load', function() {
                 projectile.update();
             })
             this.projectiles = this.projectiles.filter(projectile => !projectile.markForDeletion);
+            //sprite animation
+            if (this.frameTimer > this.frameInterval) {
+                this.frameTimer = 0;
+                if (this.frameX < this.maxFrame) this.frameX++;
+                else this.frameX = 0;
+            } else {
+                this.frameTimer += deltaTime;
+            }
         }
         draw(context){
-            context.fillStyle = 'white';
-            context.fillRect(this.x, this.y, this.width, this.height);
+            if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
             this.projectiles.forEach(projectile => {
                 projectile.draw(context);
             })
@@ -89,15 +104,20 @@ window.addEventListener('load', function() {
             this.markForDeletion = false;
             this.lives = 5;
             this.score = this.lives;
+            this.frameX = 0;
+            this.frameY = 0;
+            this.maxFrame = 7;
         }
         update(){
             this.x += this.speedX;
             if ( this.x + this.width < 0 ) this.markForDeletion = true;
+            //sprite animation
+            if ( this.frameX < this.maxFrame ) this.frameX++;
+            else this.frameX = 0;
         }
         draw(context){
-            context.fillStyle = 'red';
-            context.fillRect(this.x, this.y, this.width, this.height);
-            context.fillStyle = 'black';
+            if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
             context.font = '20px Helvetica'
             context.fillText(this.lives, this.x, this.y);
         }
@@ -113,11 +133,38 @@ window.addEventListener('load', function() {
     }
 
     class Layer{
-
+        constructor(game, image, speedModifier){
+            this.game = game;
+            this.image = image;
+            this.speedModifier = speedModifier;
+            this.width = 2187;
+            this.height = 500;
+            this.x = 0;
+            this.y = 0;
+        }
+        update(){
+            if(this.x <= -this.width) this.x = 0;
+            else this.x -= this.game.speed * this.speedModifier;
+        }
+        draw(context){
+            context.drawImage(this.image, this.x, this.y)
+            context.drawImage(this.image, this.x + this.width - 1, this.y)
+        }
     }
 
     class Background{
-
+        constructor(game){
+            this.game = game;
+            this.image1 = document.getElementById('layer1');
+            this.layer1 = new Layer(this.game, this.image1, 3);
+            this.layers = [this.layer1];
+        }
+        update(){
+            this.layers.forEach(layer => layer.update());
+        }
+        draw(context){
+            this.layers.forEach(layer => layer.draw(context));
+        }
     }
 
     class UI{
@@ -168,6 +215,7 @@ window.addEventListener('load', function() {
         constructor(width, height){
             this.width = width;
             this.height = height;
+            this.background = new Background(this); 
             this.player = new Player(this);
             this.input = new InputHandler(this);
             this.ui = new UI(this);
@@ -184,17 +232,21 @@ window.addEventListener('load', function() {
             this.winningScore = 20;
             this.gameTime = 0;
             this.timeLimit = 5000;
+            this.speed = 1;
+            this.debug = false;
         }
         update(deltaTime){
             if (!this.gameOver) this.gameTime += deltaTime;
             if (this.gameTime > this.timeLimit) this.gameOver = true;
-            this.player.update();
+            this.background.update();
+            this.player.update(deltaTime);
             if (this.ammoTimer > this.ammoInterval){
                 if (this.ammo < this.maxammo) this.ammo++;
                 this.ammoTimer = 0;
             }else{
                 this.ammoTimer += deltaTime;
             }
+            
             
             this.enemies.forEach((enemy)=>{
                 enemy.update();
@@ -226,6 +278,7 @@ window.addEventListener('load', function() {
             
         }
         draw(context){
+            this.background.draw(context);
             this.player.draw(context);
             this.ui.draw(context);
             this.enemies.forEach((enemy)=>{
