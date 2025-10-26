@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGE SELECTION</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 80px;
+            color: #66b3ff;
+            text-shadow: 0 0 20px #66b3ff, 0 0 40px #2a5a7a;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #66b3ff, 0 0 40px #2a5a7a; }
+            to { text-shadow: 0 0 30px #66b3ff, 0 0 60px #2a5a7a, 0 0 80px #1a3a52; }
+        }
+
+        .btn {
+            padding: 15px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            border: 3px solid #66b3ff;
+            background: rgba(42, 90, 122, 0.7);
+            color: #66b3ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn:hover {
+            background: #66b3ff;
+            color: #0d1e32;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #66b3ff;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>STAGE SELECTION</h1>
+    <button class="btn" onclick="">STAGE 1</button>
+    <button class="btn" onclick="navStageTwo()">STAGE 2</button>
+    <script>
+        function navStageTwo() {
+            window.location.href = "stage2.html";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="stylesheet" href="shop.css">
+</head>
+<body>
+    <!-- Shop Screen -->
+    <div id="shopScreen" class="screen">
+        <div class="shop-header">
+            <h2>🛒 Weapon Shop</h2>
+            <div class="coin-display">💰 <span id="shopCoinDisplay">0</span></div>
+        </div>
+        <div class="shop-items" id="shopItems"></div>
+        <button class="btn back-btn" onclick="showHome()">Back to Home</button>
+    </div>
+    <script>
+        const gameState = JSON.parse(localStorage.getItem('gameState')) ??
+        {
+            coins: 0,
+            weapons: {
+                basic: { owned: true, equipped: true },
+                level2: { owned: false, equipped: false },
+                level3: { owned: false, equipped: false },
+            },
+            currentWeapon: 'basic'
+        };
+        const shopItems = [
+            { id: 'basic', name: 'Basic', icon: '🔥', price: 0, desc: 'Fire a Basic projectile' },
+            { id: 'level2', name: 'Level 2', icon: '⚡⚡', price: 100, desc: 'Fire a large bullet' },
+            { id: 'level3', name: 'Level 3', icon: '⚡⚡⚡', price: 250, desc: 'Fire a gigantic projectile' },
+        ];
+
+        function updateCoinDisplay() {
+            const shopCoinDisplayEl = document.getElementById('shopCoinDisplay');
+            if (shopCoinDisplayEl && gameState) shopCoinDisplayEl.textContent = gameState.coins;
+        }
+
+        function showHome() {
+            window.location.href = 'home.html';
+        }
+
+        function showShop() {
+            updateCoinDisplay();
+            renderShopItems();
+        }
+
+        function renderShopItems() {
+            const container = document.getElementById('shopItems');
+            container.innerHTML = shopItems.map(item => {
+                const owned = gameState.weapons[item.id].owned;
+                const equipped = gameState.weapons[item.id].equipped;
+                return `
+                    <div class="shop-item">
+                        <div class="item-icon">${item.icon}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-desc">${item.desc}</div>
+                        <div class="item-price">💰 ${item.price}</div>
+                        <button class="buy-btn ${owned ? 'owned' : ''}" 
+                                onclick="buyItem('${item.id}', ${item.price})"
+                                ${owned ? 'disabled' : ''}>
+                            ${owned ? (equipped ? '✓ EQUIPPED' : '✓ OWNED') : 'BUY'}
+                        </button>
+                        ${owned && !equipped ? `<button class="buy-btn" onclick="equipWeapon('${item.id}')" style="margin-top: 10px;">EQUIP</button>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function buyItem(itemId, price) {
+            if (gameState.coins >= price && !gameState.weapons[itemId].owned) {
+                gameState.coins -= price;
+                gameState.weapons[itemId].owned = true;
+                updateCoinDisplay();
+                renderShopItems();
+            }
+            localStorage.setItem("gameState", JSON.stringify(gameState));
+        }
+
+        function equipWeapon(weaponId) {
+            Object.keys(gameState.weapons).forEach(key => {
+                gameState.weapons[key].equipped = false;
+            });
+            gameState.weapons[weaponId].equipped = true;
+            gameState.currentWeapon = weaponId;
+            renderShopItems();
+            localStorage.setItem("gameState", JSON.stringify(gameState));
+        }
+        
+        showShop();
+    </script>
+</body>
+</html>

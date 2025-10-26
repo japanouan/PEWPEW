@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pew Pew</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen active">
+        <h1>🔫 PEWPEW 🔫</h1>
+        <div class="coin-display">💰 Coins: <span id="coinDisplay">0</span></div>
+        <div class="menu-buttons">
+            <button class="btn" onclick="startGame()">Start Game</button>
+            <button class="btn" onclick="showShop()">Shop</button>
+        </div>
+    </div>
+    <script>
+        const coinDisplay = document.getElementById('coinDisplay');
+        const gameState = JSON.parse(localStorage.getItem('gameState'));
+        if (gameState) {
+            coinDisplay.textContent = gameState.coins;
+        }
+        function startGame() {
+            window.location.href = 'stageSelection.html';
+        }
+        function showShop() {
+            window.location.href = 'shop.html';
+        }
+    </script>
+</body>
+</html>

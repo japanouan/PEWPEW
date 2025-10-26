@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEWPEW Game</title>
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <canvas id="canvas1"></canvas>
+        <div id="gameOverlay">
+            <div class="overlay-content">
+                <h2 id="gameResultTitle">Game Over!</h2>
+                <p id="gameResultMessage">You scored: <span id="finalScore">0</span></p>
+                <p class="coins-earned">+<span id="coinsEarned">0</span> Coins! 💰</p>
+                <button class="btn" onclick="backToHome()">Back to Home</button>
+                <button class="btn" onclick="playAgain()">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- characters -->
+    <img id="player" src="asset/player.png" alt="">
+    <img id="angler1" src="asset/angler1.png" alt="">
+    <img id="lucky" src="asset/lucky.png" alt="">
+
+
+    <!-- props -->
+    <img id="projectile" src="asset/projectile.png" alt="">
+
+    <!-- environment -->
+    <img id="layer1" src="asset/cave.png" alt="">
+    <!-- <img id="layer2" src="asset/layer2.png" alt="">
+    <img id="layer3" src="asset/layer3.png" alt="">
+    <img id="layer4" src="asset/layer4.png" alt=""> -->
+
+    <script src="script2.js"></script>
+</body>
+</html>

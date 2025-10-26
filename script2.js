@@ -1,8 +1,46 @@
+function playAgain() {
+    window.location.reload();
+}
+function backToHome() {
+    window.location.href = 'home.html';
+}
 window.addEventListener('load', function() {
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
     canvas.width = 1000;
     canvas.height = 500;
+    let animationId = null;
+
+    const gameState = JSON.parse(localStorage.getItem("gameState")) ?? {
+        coins: 0,
+        weapons: {
+            basic: { owned: true, equipped: true, level: 1 },
+            level2: { owned: false, equipped: false, level: 2 },
+            level3: { owned: false, equipped: false, level: 3 },
+        },
+        currentWeapon: 'basic'
+    };
+
+    function endGame (score, isWin) {
+        const coinsEarned = Math.floor(score / 10);
+        gameState.coins += coinsEarned;
+
+        const gameResultTitleEl = document.getElementById('gameResultTitle');
+        const finalScoreEl = document.getElementById('finalScore');
+        const coinsEarnedEL = document.getElementById('coinsEarned');
+        
+        gameResultTitleEl.innerHTML = isWin ? 'You Win! 🎉' : 'Game Over!';
+        finalScoreEl.innerHTML = score;
+        coinsEarnedEL.innerHTML = coinsEarned;
+        document.getElementById('gameOverlay').classList.add('active');
+        localStorage.setItem("gameState", JSON.stringify(gameState));
+
+        // Stop animation
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+    }
 
     class InputHandler{
         constructor(game){
@@ -29,10 +67,17 @@ window.addEventListener('load', function() {
             this.game = game;
             this.x = x;
             this.y = y;
-            this.width = 10;
-            this.height = 3;
+            this.level = gameState.weapons[gameState.currentWeapon].level;
+            this.baseWidth = 20;
+            this.baseHeight = 15;
+            this.width = this.baseWidth + this.level * 20;
+            this.height = this.baseHeight + this.level * 10;
             this.speed = 3;   
             this.markForDeletion = false;
+            this.frameX = 0;
+            this.frameY = 0;
+            this.maxFrame = 2;
+            this.image = document.getElementById(`projectile`);
         }
         update(){
             this.x += this.speed;
@@ -40,7 +85,20 @@ window.addEventListener('load', function() {
         }
         draw(context){
             context.fillStyle = 'yellow';
-            context.fillRect(this.x, this.y, this.width, this.height);
+            if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
+            //194 412 662
+            if (this.level === 1) {
+                context.drawImage(this.image, 0, 0, 194, 107, 
+                    this.x, this.y, this.width, this.height);
+            } else if (this.level === 2) {
+                context.drawImage(this.image, 194, 0, 218, 107, 
+                    this.x, this.y, this.width, this.height);
+            } else {
+                context.drawImage(this.image, 412, 0, 250, 107, 
+                    this.x, this.y, this.width, this.height);
+                    console.log(this.level);
+            }
+            
         }
     }
     class Particle{
@@ -66,6 +124,7 @@ window.addEventListener('load', function() {
             this.powerUpTimer = 0;
             this.powerUpLimit = 10000;
             this.projectileYOffset = 0.75;
+            this.weaponlevel = 1;
         }
         update(deltaTime){
             if ( this.game.keys.includes('ArrowUp') ) this.speedY = -this.maxSpeed;
@@ -122,8 +181,6 @@ window.addEventListener('load', function() {
             this.powerUpTimer = 0;
             this.powerUp = true;
             this.game.ammo = this.game.maxammo;
-            console.log(`this is ammo ${this.game.ammo} and this is max ammo ${this.game.maxammo}`);
-            
         }
     }
     class Enemy{
@@ -157,7 +214,7 @@ window.addEventListener('load', function() {
             this.image = document.getElementById('angler1');
             this.width = 228;
             this.height = 169;
-            this.lives = 2;
+            this.lives = 14;
             this.score = this.lives;
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
             this.frameY = Math.floor(Math.random() * 3);
@@ -170,7 +227,7 @@ window.addEventListener('load', function() {
             this.image = document.getElementById('angler1');
             this.width = 228;
             this.height = 169;
-            this.lives = 3;
+            this.lives = 16;
             this.score = this.lives;
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
             this.frameY = Math.floor(Math.random() * 2);
@@ -183,7 +240,7 @@ window.addEventListener('load', function() {
             this.image = document.getElementById('lucky');
             this.width = 99;
             this.height = 95;
-            this.lives = 3;
+            this.lives = 12;
             this.score = 20;
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
             this.frameY = Math.floor(Math.random() * 2);
@@ -249,24 +306,6 @@ window.addEventListener('load', function() {
             for (let i = 0; i < this.game.ammo; i++){
                 context.fillRect(20 +5 * i, 50, 3, 20);
             }
-            //game over message
-            if (this.game.gameOver) {
-                context.textAlign = 'center';
-                let message1;
-                let message2;
-                if (this.game.score >= this.game.winningScore) {
-                    message1 = 'You win!';
-                    message2 = 'Well done!';
-                } else {
-                    message1 = 'You lose!';
-                    message2 = 'Try again!';
-                }
-                context.font = '50px ' + this.fontFamily;
-                context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 - 20);
-                context.font = '25px ' + this.fontFamily;
-                context.fillText(message2, this.game.width * 0.5, this.game.height * 0.5 + 20);
-
-            }
             context.restore();
         }
     }
@@ -293,11 +332,19 @@ window.addEventListener('load', function() {
             this.timeLimit = 90000;
             this.speed = 1;
             this.debug = false;
-            this.weaponlevel = 1;
+            this.playerLoaded = false;
         }
         update(deltaTime){
+            if (!this.playerLoaded) {
+                this.player.weaponlevel = gameState.weapons[gameState.currentWeapon].level;
+                this.playerLoaded = true;
+            }
             if (!this.gameOver) this.gameTime += deltaTime;
-            if (this.gameTime > this.timeLimit) this.gameOver = true;
+            if (this.gameTime > this.timeLimit && !this.gameOver) {
+                this.gameOver = true;
+                endGame(this.score, false);
+                return;
+            }
             this.background.update();
             this.player.update(deltaTime);
             if (this.ammoTimer > this.ammoInterval){
@@ -315,13 +362,17 @@ window.addEventListener('load', function() {
                 }
                 this.player.projectiles.forEach(projectile => {
                     if (this.checkCollision(projectile, enemy)){
-                        enemy.lives -= this.weaponlevel;
+                        enemy.lives -= this.player.weaponlevel * 2;
                         projectile.markForDeletion = true;
                         if (enemy.lives <=0) {
                             enemy.markForDeletion = true;
                             if (enemy.type == 'lucky') this.player.enterPowerUp();
                             if (!this.gameOver) this.score += enemy.score;
-                            if (this.score >= this.winningScore) this.gameOver = true;
+                            if (this.score >= this.winningScore) {
+                                this.gameOver = true;
+                                endGame(this.score, true);
+                                return;
+                            }
                         }
                     }
                 }
@@ -370,7 +421,7 @@ window.addEventListener('load', function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         game.update(deltaTime);
         game.draw(ctx);
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
     }
     animate(0);
 });
