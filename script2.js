@@ -219,30 +219,35 @@ window.addEventListener('load', function() {
         constructor(game){
             super(game);
             this.image = document.getElementById('tiger');
-            this.width = 290;
-            this.height = 196;
+            this.width = 290 * 0.8;
+            this.height = 196 * 0.8;
             this.maxFrame = 3;
             this.lives = 14;
             this.score = this.lives;
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
         }
+        draw(context){
+            // super.draw(context);
+            context.drawImage(this.image, this.frameX * 290, 0, 290, 196, this.x, this.y, this.width, this.height);
+            context.font = '20px Helvetica'
+            context.fillText(this.lives, this.x, this.y);
+        }
     }
 
-    class Angler2 extends Enemy {
+    class Chevrotain extends Enemy {
         constructor(game){
             super(game);
-            this.image = document.getElementById('fish');
-            this.width = 500 * 0.4;
-            this.height = 345 * 0.4;
-            this.maxFrame = 2;
+            this.image = document.getElementById('chevrotain');
+            this.width = 165 * 0.5;
+            this.height = 220 * 0.5;
+            this.maxFrame = 5;
             this.lives = 16;
             this.score = this.lives;
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
-            this.frameY = Math.floor(Math.random() * 3);
         }
         draw(context){
             // super.draw(context);
-            context.drawImage(this.image, this.frameX * 500, this.frameY * 345, 500, 345, this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.frameX * 165, 0, 165, 220, this.x, this.y, this.width, this.height);
             context.font = '20px Helvetica'
             context.fillText(this.lives, this.x, this.y);
         }
@@ -259,6 +264,26 @@ window.addEventListener('load', function() {
             this.y = Math.random() * (this.game.height * 0.9 - this.height);
             this.frameY = Math.floor(Math.random() * 2);
             this.type = 'lucky';
+        }
+    }
+
+    class Ghost extends Enemy {
+        constructor(game){
+            super(game);
+            this.image = document.getElementById('ghost');
+            this.width = 92;
+            this.height = 93;
+            this.lives = 12;
+            this.score = 20;
+            this.maxFrame = 4;
+            this.y = Math.random() * (this.game.height * 0.9 - this.height);
+            this.type = 'lucky';
+        }
+        draw(context){
+            // super.draw(context);
+            context.drawImage(this.image, this.frameX * 184, this.frameY, 184, 186, this.x, this.y, this.width, this.height);
+            context.font = '20px Helvetica'
+            context.fillText(this.lives, this.x, this.y);
         }
     }
 
@@ -335,9 +360,9 @@ window.addEventListener('load', function() {
             this.enemies = [];
             this.score = 0;
             this.enemyTimer = 0;
-            this.enemyInterval = 1500;
-            this.ammo = 20;
-            this.maxammo = 50;
+            this.enemyInterval = 1000;
+            this.ammo = 10;
+            this.maxammo = 12;
             this.ammoTimer = 0;
             this.ammoInterval = 500;
             this.gameOver = false;
@@ -413,9 +438,9 @@ window.addEventListener('load', function() {
         }
         addEnemy(){
             const randomize = Math.random();
-            if (randomize < 0.3) this.enemies.push(new Tiger(this));
-            else if (randomize < 0.6) this.enemies.push(new Angler2(this));
-            else this.enemies.push(new LuckyFish(this));
+            if (randomize < 0.4) this.enemies.push(new Tiger(this));
+            else if (randomize < 0.8) this.enemies.push(new Chevrotain(this));
+            else this.enemies.push(new Ghost(this));
             // console.log(this.enemies);
         }
         checkCollision(rect1, rect2){
