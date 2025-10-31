@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Javascript Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bangers&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./stage1.css" />
+  </head>
+  <body>
+
+<!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <canvas id="canvas1"></canvas>
+        <div id="gameOverlay">
+            <div class="overlay-content">
+                <h2 id="gameResultTitle">Game Over!</h2>
+                <p id="gameResultMessage">You scored: <span id="finalScore">0</span></p>
+                <p class="coins-earned">+<span id="coinsEarned">0</span> Coins! 💰</p>
+                <button class="btn" onclick="backToHome()">Back to Home</button>
+                <button class="btn" onclick="playAgain()">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas1"></canvas>
+
+    <!-- characters -->
+    <!-- <img id="player" src="./assets/playerDarkFantacy2.png" alt="player"> -->
+    <img id="player" src="./asset/player.png" alt="player" />
+    <img id="miniDragon" src="./asset/miniDragon.png" alt="miniDragon" />
+    <img id="bigDragon" src="./asset/BigDragon.png" alt="bigDragon" />
+    <img id="darkAngle" src="./asset/darkAngleAura.png" alt="darkAngle" />
+    <!-- props -->
+    <img id="projectile" src="./asset/projectile.png" alt="projectile" />
+
+    <!-- environment -->
+    <img
+      id="layer8"
+      src="./asset/stage1Bg.png"
+      alt="layer8"
+    />
+
+    <script src="./scriptStage1.js"></script>
+  </body>
+</html>
