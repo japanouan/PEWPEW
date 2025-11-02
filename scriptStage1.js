@@ -1,3 +1,6 @@
+  function backToHome() {
+            window.location.href = "home.html";
+        }
 function playAgain() {
     window.location.reload();
 }
@@ -115,7 +118,7 @@ window.addEventListener('load', function(){
             this.powerUp = false;
             this.powerUpTimer = 0;
             this.powerUpLimit = 10000;
-            this.weaponlevel = 1;
+            this.weaponlevel = gameState.weapons[gameState.currentWeapon].level
         }
         update(deltaTime){
             if(this.game.keys.includes('ArrowUp')) {this.speedY = -this.maxSpeed}
@@ -203,6 +206,7 @@ window.addEventListener('load', function(){
             if(this.game.debug)context.strokeRect(this.x,this.y,this.width,this.height);
             context.drawImage(this.image,this.frameX*this.width,this.frameY*this.height,this.width,this.height,this.x,this.y,this.width,this.height);
             context.font = '20px Helvetica';
+            context.fillStyle = "tomato";
             context.fillText(this.lives,this.x,this.y);
         }
     }
@@ -327,9 +331,9 @@ window.addEventListener('load', function(){
             this.ammoInterval = 500;
             this.gameOver = false;
             this.score = 0;
-            this.winningScore = 3000;
+            this.winningScore = 2000;
             this.gameTime = 0;
-            this.timeLimit = 20000;
+            this.timeLimit = 200000;
             this.speed = 1;
             this.debug = false;
         }
@@ -355,7 +359,7 @@ window.addEventListener('load', function(){
                 }
                 this.player.projectiles.forEach( projectile =>{
                     if(this.checkCollision(projectile,enemy)){
-                        enemy.lives--;
+                        enemy.lives -= this.player.weaponlevel ;
                         projectile.markedForDeletion = true;
                         if(enemy.lives <= 0){
                             enemy.markedForDeletion = true;

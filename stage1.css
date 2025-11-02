@@ -70,7 +70,7 @@
 }
 
 #canvas1{
-    /* border: 5px solid black; */
+    border: 5px solid black;
     position: absolute;
     top:50%;
     left:50%;
@@ -82,3 +82,31 @@
 #layer8,#player,#miniDragon,#bigDragon,#darkAngle,#projectile{
     display: none;
 }
+body {
+    background: linear-gradient(135deg, #27487b 0%, #1a3a52 100%);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+ .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid #66b3ff;
+            background: rgba(42, 90, 122, 0.7);
+            color: #66b3ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .back-btn:hover {
+            background: #66b3ff;
+            color: #0d1e32;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #66b3ff;
+        }

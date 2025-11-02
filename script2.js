@@ -1,3 +1,6 @@
+  function backToHome() {
+            window.location.href = "home.html";
+        }
 function playAgain() {
     window.location.reload();
 }
@@ -7,7 +10,7 @@ function backToHome() {
 window.addEventListener('load', function() {
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 1000;
+    canvas.width = 1500;
     canvas.height = 500;
     let animationId = null;
 
@@ -211,6 +214,7 @@ window.addEventListener('load', function() {
             if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
             context.font = '20px Helvetica'
+            // context.fillStyle = "tomato"
             context.fillText(this.lives, this.x, this.y);
         }
     }
@@ -401,7 +405,7 @@ window.addEventListener('load', function() {
                 }
                 this.player.projectiles.forEach(projectile => {
                     if (this.checkCollision(projectile, enemy)){
-                        enemy.lives -= this.player.weaponlevel * 2;
+                        enemy.lives -= this.player.weaponlevel;
                         projectile.markForDeletion = true;
                         if (enemy.lives <=0) {
                             enemy.markForDeletion = true;
