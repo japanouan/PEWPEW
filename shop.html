@@ -13,6 +13,7 @@
             <h2>🛒 Weapon Shop</h2>
             <div class="coin-display">💰 <span id="shopCoinDisplay">0</span></div>
         </div>
+        
         <div class="shop-items" id="shopItems"></div>
         <button class="btn back-btn" onclick="showHome()">Back to Home</button>
     </div>
@@ -28,9 +29,9 @@
             currentWeapon: 'basic'
         };
         const shopItems = [
-            { id: 'basic', name: 'Basic', icon: '🔥', price: 0, desc: 'Fire a Basic projectile' },
-            { id: 'level2', name: 'Level 2', icon: '⚡⚡', price: 100, desc: 'Fire a large bullet' },
-            { id: 'level3', name: 'Level 3', icon: '⚡⚡⚡', price: 250, desc: 'Fire a gigantic projectile' },
+            { id: 'basic', name: 'Basic', icon: '<img src="./asset/level1.png" alt="level1">', price: 0, desc: 'Fire a Basic projectile' },
+            { id: 'level2', name: 'Level 2', icon: '<img src="./asset/level2.png" alt="level2">', price: 100, desc: 'Fire a large bullet' },
+            { id: 'level3', name: 'Level 3', icon: '<img src="./asset/level3.png" alt="level3">', price: 250, desc: 'Fire a gigantic projectile' },
         ];
 
         function updateCoinDisplay() {

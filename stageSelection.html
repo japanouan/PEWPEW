@@ -5,24 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STAGE SELECTION</title>
     <style>
-        body {
+         body {
             background-color: #000;
             color: #fff;
             text-align: center;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid #66b3ff;
+            background: rgba(42, 90, 122, 0.7);
+            color: #66b3ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .back-btn:hover {
+            background: #66b3ff;
+            color: #0d1e32;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #66b3ff;
         }
 
         h1 {
             font-size: 80px;
             color: #66b3ff;
             text-shadow: 0 0 20px #66b3ff, 0 0 40px #2a5a7a;
-            margin-bottom: 20px;
+            margin-top: 100px;
+            margin-bottom: 40px;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         @keyframes glow {
             from { text-shadow: 0 0 20px #66b3ff, 0 0 40px #2a5a7a; }
             to { text-shadow: 0 0 30px #66b3ff, 0 0 60px #2a5a7a, 0 0 80px #1a3a52; }
+        }
+
+        .stage-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            margin-top: 40px;
         }
 
         .btn {
@@ -44,14 +78,17 @@
             transform: scale(1.05);
             box-shadow: 0 0 20px #66b3ff;
         }
-
     </style>
 </head>
 <body>
+    <button class="back-btn" onclick="backToHome()">← BACK TO HOME</button>
     <h1>STAGE SELECTION</h1>
     <button class="btn" onclick="navStageOne()">STAGE 1</button>
     <button class="btn" onclick="navStageTwo()">STAGE 2</button>
     <script>
+        function backToHome() {
+            window.location.href = "home.html";
+        }
         function navStageTwo() {
             window.location.href = "stage2.html";
         }

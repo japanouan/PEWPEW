@@ -361,7 +361,7 @@ window.addEventListener('load', function(){
                             enemy.markedForDeletion = true;
                             if (enemy.type == 'lucky') this.player.enterPowerUp();
                             if(!this.gameOver) {this.score += enemy.score};
-                            if(this.score >= this.winningScore){
+                            if(this.score >= this.winningScore && !this.gameOver){
                                 this.gameOver = true;
                                 endGame(this.score, true);
                                 return;
